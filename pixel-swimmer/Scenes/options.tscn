@@ -1,0 +1,71 @@
+[gd_scene load_steps=6 format=3 uid="uid://cghi1x1nngvw8"]
+
+[ext_resource type="Script" uid="uid://dnwruofbat5ej" path="res://Scripts/options.gd" id="1_4tmxy"]
+[ext_resource type="Texture2D" uid="uid://cw4lswe4a3yug" path="res://Assets/Backgrounds/CERVIX MENU BACKGROUND BLURRED.png" id="2_qyyw6"]
+[ext_resource type="AudioStream" uid="uid://bbo5sktnx2wxn" path="res://Assets/Sound Design/Music/Pixel Swimmer Menu Music.wav" id="3_qyyw6"]
+[ext_resource type="Texture2D" uid="uid://crlfeyg4504ld" path="res://Assets/PIXEL SWIMMER MENU Button Assets/Back BUTTON (not hovered).png" id="4_kftxf"]
+[ext_resource type="Texture2D" uid="uid://kivgdmkjc8lo" path="res://Assets/PIXEL SWIMMER MENU Button Assets/Back BUTTON (hovered).png" id="5_663nc"]
+
+[node name="Options" type="Node2D"]
+position = Vector2(282, 38)
+script = ExtResource("1_4tmxy")
+
+[node name="CervixMenuBackgroundBlurred" type="Sprite2D" parent="."]
+position = Vector2(-12.000048, 442)
+scale = Vector2(0.4999999, 0.4989583)
+texture = ExtResource("2_qyyw6")
+metadata/_edit_lock_ = true
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+offset_left = -206.0
+offset_top = 169.11
+offset_right = -64.19171
+offset_bottom = 364.91046
+scale = Vector2(2.8035028, 2.8001893)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="Vol_Label" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Volume"
+
+[node name="Volume" type="HSlider" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+min_value = -80.0
+max_value = 0.0
+
+[node name="Mute_Label" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Mute"
+
+[node name="Mute" type="CheckBox" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_qyyw6")
+volume_db = -5.0
+autoplay = true
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 458.0
+offset_top = 516.0
+offset_right = 566.0
+offset_bottom = 555.0
+
+[node name="Back" type="TextureButton" parent="Control"]
+layout_mode = 0
+offset_left = -704.0
+offset_top = -40.0
+offset_right = -404.0
+offset_bottom = 60.0
+scale = Vector2(1.4722989, 1.4204601)
+texture_normal = ExtResource("4_kftxf")
+texture_hover = ExtResource("5_663nc")
+
+[connection signal="value_changed" from="MarginContainer/VBoxContainer/Volume" to="." method="_on_volume_value_changed"]
+[connection signal="toggled" from="MarginContainer/VBoxContainer/Mute" to="." method="_on_mute_toggled"]
+[connection signal="pressed" from="Control/Back" to="." method="_on_texture_button_pressed"]
+[connection signal="pressed" from="Control/Back" to="." method="_on_back_pressed"]
