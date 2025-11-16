@@ -133,6 +133,7 @@ stream = ExtResource("16_nnt18")
 volume_db = -5.0
 
 [node name="PauseMenu" parent="." instance=ExtResource("18_85qyi")]
+visible = false
 
 [connection signal="timeout" from="EnemySpawnTimer" to="." method="_on_enemy_spawn_timer_timeout"]
 [connection signal="pressed" from="Button_Manager/Pause Button" to="." method="_on_pause_button_pressed"]

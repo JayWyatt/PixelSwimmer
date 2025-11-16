@@ -1,10 +1,11 @@
-[gd_scene load_steps=21 format=3 uid="uid://cxqykb82x7b5d"]
+[gd_scene load_steps=22 format=3 uid="uid://cxqykb82x7b5d"]
 
 [ext_resource type="Script" uid="uid://cvey1tmljnqih" path="res://Scripts/player.gd" id="1_cvnsp"]
 [ext_resource type="Texture2D" uid="uid://2nv72grlmhon" path="res://Assets/Sprites/SPERMANIMATEDGIF-ezgif.com-gif-to-sprite-converter.png" id="2_6t5aa"]
 [ext_resource type="AudioStream" uid="uid://dmoykrnncoeb3" path="res://Assets/Sound Design/SFX/Pixel Swimmer Player Hit SFX.wav" id="3_6t5aa"]
 [ext_resource type="PackedScene" uid="uid://dem6ixaredkh6" path="res://Scenes/heart.tscn" id="4_vgqql"]
 [ext_resource type="AudioStream" uid="uid://c2jhvinbj5ynt" path="res://Assets/Sound Design/SFX/Pixel Swimmer Low Health SFX.wav" id="5_fkybt"]
+[ext_resource type="PackedScene" uid="uid://bilmsn6dwb60u" path="res://Scenes/blackheart.tscn" id="5_x3wgy"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_vgqql"]
 radius = 12.0
@@ -135,32 +136,61 @@ volume_db = 5.0
 
 [node name="health_bar" type="CanvasLayer" parent="."]
 
-[node name="VBoxContainer" type="VBoxContainer" parent="health_bar"]
+[node name="RedHearts" type="VBoxContainer" parent="health_bar"]
 offset_left = 477.5
 offset_top = 65.0
 offset_right = 535.5
 offset_bottom = 220.0
 size_flags_horizontal = 6
 
-[node name="heart" type="TextureRect" parent="health_bar/VBoxContainer"]
+[node name="heart" type="TextureRect" parent="health_bar/RedHearts"]
 custom_minimum_size = Vector2(58.775, 49.72)
 layout_mode = 2
 
-[node name="Heart" parent="health_bar/VBoxContainer/heart" instance=ExtResource("4_vgqql")]
+[node name="Heart" parent="health_bar/RedHearts/heart" instance=ExtResource("4_vgqql")]
 position = Vector2(30, 24)
 
-[node name="heart2" type="TextureRect" parent="health_bar/VBoxContainer"]
+[node name="heart2" type="TextureRect" parent="health_bar/RedHearts"]
 custom_minimum_size = Vector2(58.775, 49.72)
 layout_mode = 2
 
-[node name="Heart" parent="health_bar/VBoxContainer/heart2" instance=ExtResource("4_vgqql")]
+[node name="Heart" parent="health_bar/RedHearts/heart2" instance=ExtResource("4_vgqql")]
 position = Vector2(30, 24)
 
-[node name="heart3" type="TextureRect" parent="health_bar/VBoxContainer"]
+[node name="heart3" type="TextureRect" parent="health_bar/RedHearts"]
 custom_minimum_size = Vector2(58.775, 49.72)
 layout_mode = 2
 
-[node name="Heart" parent="health_bar/VBoxContainer/heart3" instance=ExtResource("4_vgqql")]
+[node name="Heart" parent="health_bar/RedHearts/heart3" instance=ExtResource("4_vgqql")]
+position = Vector2(30, 24)
+
+[node name="BlackHearts" type="VBoxContainer" parent="health_bar"]
+visible = false
+offset_left = 477.5
+offset_top = 65.0
+offset_right = 535.5
+offset_bottom = 220.0
+size_flags_horizontal = 6
+
+[node name="heart" type="TextureRect" parent="health_bar/BlackHearts"]
+custom_minimum_size = Vector2(58.775, 49.72)
+layout_mode = 2
+
+[node name="Black Heart" parent="health_bar/BlackHearts/heart" instance=ExtResource("5_x3wgy")]
+position = Vector2(30, 24)
+
+[node name="heart2" type="TextureRect" parent="health_bar/BlackHearts"]
+custom_minimum_size = Vector2(58.775, 49.72)
+layout_mode = 2
+
+[node name="Black Heart" parent="health_bar/BlackHearts/heart2" instance=ExtResource("5_x3wgy")]
+position = Vector2(30, 24)
+
+[node name="heart3" type="TextureRect" parent="health_bar/BlackHearts"]
+custom_minimum_size = Vector2(58.775, 49.72)
+layout_mode = 2
+
+[node name="Black Heart" parent="health_bar/BlackHearts/heart3" instance=ExtResource("5_x3wgy")]
 position = Vector2(30, 24)
 
 [node name="LowHealth" type="AudioStreamPlayer" parent="."]

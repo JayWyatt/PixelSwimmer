@@ -192,7 +192,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"default",
-"speed": 5.0
+"speed": 8.0
 }]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_bmhhk"]
@@ -375,7 +375,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"default",
-"speed": 5.0
+"speed": 8.0
 }]
 
 [node name="Main Menu" type="Node2D"]
@@ -402,6 +402,7 @@ offset_right = 383.03357
 offset_bottom = 459.05392
 scale = Vector2(1.337, 1.337)
 texture_normal = ExtResource("2_ce3w2")
+texture_pressed = ExtResource("3_cp0ys")
 texture_hover = ExtResource("3_cp0ys")
 
 [node name="Options" type="TextureButton" parent="Button_Manager"]
@@ -422,6 +423,7 @@ offset_right = 279.0336
 offset_bottom = 692.3447
 scale = Vector2(1.337, 1.337)
 texture_normal = ExtResource("4_opfnp")
+texture_pressed = ExtResource("3_cp0ys")
 texture_hover = ExtResource("7_trj04")
 
 [node name="MenuMusic" type="AudioStreamPlayer" parent="."]

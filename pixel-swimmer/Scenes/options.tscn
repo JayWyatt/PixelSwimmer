@@ -11,10 +11,9 @@ position = Vector2(282, 38)
 script = ExtResource("1_4tmxy")
 
 [node name="CervixMenuBackgroundBlurred" type="Sprite2D" parent="."]
-position = Vector2(-12.000048, 442)
-scale = Vector2(0.4999999, 0.4989583)
+position = Vector2(-12.000048, 441.49997)
+scale = Vector2(0.4999999, 0.49947912)
 texture = ExtResource("2_qyyw6")
-metadata/_edit_lock_ = true
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 offset_left = -206.0
@@ -67,5 +66,5 @@ texture_hover = ExtResource("5_663nc")
 
 [connection signal="value_changed" from="MarginContainer/VBoxContainer/Volume" to="." method="_on_volume_value_changed"]
 [connection signal="toggled" from="MarginContainer/VBoxContainer/Mute" to="." method="_on_mute_toggled"]
-[connection signal="pressed" from="Control/Back" to="." method="_on_texture_button_pressed"]
 [connection signal="pressed" from="Control/Back" to="." method="_on_back_pressed"]
+[connection signal="pressed" from="Control/Back" to="." method="_on_texture_button_pressed"]

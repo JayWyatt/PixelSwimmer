@@ -12,7 +12,8 @@ var laser_scene = preload("res://Scenes/laser.tscn")
 var is_slowed := false
 
 #Player Hitpoints
-var hearts_list : Array[TextureRect]
+var red_hearts_list : Array[TextureRect]
+var black_hearts_list : Array[TextureRect]
 var max_hp := 3
 var hp := max_hp
 
@@ -36,14 +37,14 @@ func apply_slow(amount: float, duration: float) -> void:
 
 #hearts
 func _ready() -> void:
-	var hearts_parent = $health_bar/VBoxContainer
+	var hearts_parent = $health_bar/RedHearts
 	for child in hearts_parent.get_children():
-		hearts_list.append(child)
+		red_hearts_list.append(child)
 		update_heart_display()
 
 func update_heart_display():
-	for i in range(hearts_list.size()):
-		hearts_list[i].visible = i < hp
+	for i in range(red_hearts_list.size()):
+		red_hearts_list[i].visible = i < hp
 
 func low_health() -> void:
 	if hp == 1:

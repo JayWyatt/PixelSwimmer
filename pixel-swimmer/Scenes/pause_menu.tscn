@@ -58,7 +58,6 @@ texture_hover = ExtResource("7_0fi7f")
 
 [node name="OptionsMenu" parent="." instance=ExtResource("13_uscpe")]
 physics_interpolation_mode = 1
-visible = false
 
 [node name="PauseMenuMusic" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("11_524vl")

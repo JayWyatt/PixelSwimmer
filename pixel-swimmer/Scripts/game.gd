@@ -29,6 +29,8 @@ func set_score(value):
 	hud.score = score
 
 var high_score
+
+#background movment speed
 var scroll_speed = 300
 
 # ------------------------------------------------------------
@@ -42,7 +44,7 @@ func _pause_game():
 	get_tree().paused = true
 	reset_pause_menu()
 	pause_menu.visible = true
-	hud.visible = false
+	hud.visible = true
 
 func _resume_game():
 	get_tree().paused = false
@@ -91,10 +93,11 @@ func _ready() -> void:
 func save_game():
 	var save_file = FileAccess.open("user://save.data", FileAccess.WRITE)
 	save_file.store_32(high_score)
-
+	
 # ------------------------------------------------------------
 # ENEMY & LASER LOGIC
 # ------------------------------------------------------------
+
 func _on_player_laser_shot(laser_scene, location):
 	var laser = laser_scene.instantiate()
 	laser.global_position = location

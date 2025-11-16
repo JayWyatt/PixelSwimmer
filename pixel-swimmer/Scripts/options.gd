@@ -1,23 +1,21 @@
 extends Node2D
 
-#export variables
-
-#variables
-
-#functions
-
 func _ready() -> void:
-	process_mode = Node.PROCESS_MODE_WHEN_PAUSED
+	process_mode = Node.PROCESS_MODE_INHERIT
+	get_tree().paused = false   # Ensure the menu always works normally
 
-#back button
 func _on_back_pressed() -> void:
-	$".".visible = false
-	$"../Pause".visible = true
+	# If we are in the main menu, this scene is unpaused
+	if !get_tree().paused:
+		get_tree().change_scene_to_file("res://Scenes/main_menu.tscn")
+	else:
+		# Safety case (shouldn't happen)
+		get_tree().paused = true
+		get_tree().current_scene.get_node("PauseMenu").visible = true
+		visible = false
 
-#mute button
 func _on_mute_toggled(toggled_on: bool) -> void:
-	AudioServer.set_bus_mute(0,toggled_on)
+	AudioServer.set_bus_mute(0, toggled_on)
 
-#volume knob
 func _on_volume_value_changed(value: float) -> void:
-	AudioServer.set_bus_volume_db(0,value)
+	AudioServer.set_bus_volume_db(0, value)
