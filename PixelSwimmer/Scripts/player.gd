@@ -1,0 +1,330 @@
+class_name Player
+extends CharacterBody2D
+
+# ───────────────────────────────────────────────
+# Signals
+# ───────────────────────────────────────────────
+signal laser_shot(laser_scene, location, shooter)
+signal killed
+signal hit
+signal levelcompleted
+
+# ───────────────────────────────────────────────
+# Variables
+# ───────────────────────────────────────────────
+# Mobile variables
+@export var tap_max_time := 0.18        # Max time for a tap
+@export var tap_max_distance := 20      # Max movement allowed for a tap
+var touch_start_pos := Vector2.ZERO
+var touch_start_time := 0.0
+var is_dragging := false
+var move_direction := Vector2.ZERO
+
+# Movement vs shooting lock
+@export var move_lock_time := 0.15   # seconds before shooting is allowed after movement
+var movement_started := false
+var can_shoot_after_move := false
+var last_move_time := 0.0
+
+# Shoot cooldown (prevents double tap)
+@export var shoot_cooldown := 0.05
+var last_shot_time := -999.0
+@export var drag_threshold := 15
+# Touch ownership
+var active_touch_id := -1
+var touch_is_movement := false
+
+# Export variables
+@export var SPEED := 300.0
+@export var SHOOT_MULTIPLIER := 1.3
+@export var margin := 32
+
+# Laser variables
+@export var base_laser_damage = 1
+var laser_damage_multiplier := 1.0
+var laser_scene := preload("res://Scenes/Laser Scenes/Laser.tscn")
+@export var damage_buff_laser_scene := preload("res://Scenes/Laser Scenes/DamageBuffLaser.tscn")
+
+var buff_active = false
+# Slow effect
+var is_slowed := false
+
+# HP + UI
+@export var max_hp := 10
+@export var hp: int = 3
+
+var red_hearts_list: Array[TextureRect] = []
+var black_hearts_list: Array[TextureRect] = []
+var blue_hearts_list: Array[TextureRect] = []
+
+# Player buff defaults
+var can_heal: bool = true
+var is_poisoned: bool = false
+var has_shield: bool = false
+var shield_time_left: float = 0.0
+var has_damage_buff: bool = false
+var damage_time_left: float = 0.0
+var level_completed: bool = false
+
+# ───────────────────────────────────────────────
+# Node References
+# ───────────────────────────────────────────────
+@onready var muzzle: Node2D = $Muzzle
+@onready var red_hearts := $health_bar/RedHearts
+@onready var black_hearts := $health_bar/BlackHearts
+@onready var blue_hearts := $health_bar/BlueHearts
+@onready var damage_sfx := $TakeDamage
+@onready var low_health_sfx := $LowHealth
+
+var touch_was_movement := false
+var shoot_armed := false   # 🔑 THIS IS THE KEY
+
+# ───────────────────────────────────────────────
+# MOBILE INPUT
+# ───────────────────────────────────────────────
+
+func _input(event):
+	# --------------------
+	# TOUCH START
+	# --------------------
+	if event is InputEventScreenTouch and event.pressed:
+		touch_start_pos = event.position
+		touch_start_time = Time.get_ticks_msec()
+		is_dragging = true
+		touch_was_movement = false
+
+	# --------------------
+	# DRAG → MOVEMENT
+	# --------------------
+	elif event is InputEventScreenDrag and is_dragging:
+		var drag_vector = event.position - touch_start_pos
+
+		if drag_vector.length() > 12:
+			touch_was_movement = true
+			move_in_direction(drag_vector.normalized())
+
+	# --------------------
+	# TOUCH RELEASE
+	# --------------------
+	elif event is InputEventScreenTouch and not event.pressed:
+		is_dragging = false
+
+		var distance: float = (event.position - touch_start_pos).length()
+
+
+		# ✅ If this touch moved → it is NEVER allowed to shoot
+		if touch_was_movement:
+			shoot_armed = true   # 🔑 next tap may shoot
+			return
+
+		# ✅ If we reached here, it was a tap
+		if shoot_armed and distance <= tap_max_distance:
+			try_shoot()
+			shoot_armed = false   # 🔒 consume the shot
+		else:
+			# First tap only arms shooting
+			shoot_armed = true
+
+func move_in_direction(direction: Vector2):
+	move_direction = direction
+
+
+# ───────────────────────────────────────────────
+# PHYSICS
+# ───────────────────────────────────────────────
+func _physics_process(delta):
+	if is_dragging and move_direction != Vector2.ZERO:
+		velocity = move_direction * SPEED
+	else:
+		velocity.x = move_toward(velocity.x, 0.0, SPEED * delta)
+		velocity.y = move_toward(velocity.y, 0.0, SPEED * delta)
+
+	move_and_slide()
+
+	var screen_size = get_viewport_rect().size
+	var half_height = screen_size.y * 0.5
+
+	global_position.x = clamp(global_position.x, margin, screen_size.x - margin)
+	global_position.y = clamp(global_position.y, half_height + margin, screen_size.y - margin)
+
+
+# ───────────────────────────────────────────────
+# SHOOTING
+# ───────────────────────────────────────────────
+func shoot():
+	var location = muzzle.global_position
+
+	var scene_to_fire = laser_scene
+	if has_damage_buff:
+		scene_to_fire = damage_buff_laser_scene
+
+	laser_shot.emit(scene_to_fire, location, self)
+
+func try_shoot():
+	var now = Time.get_ticks_msec() / 1000.0
+	if now - last_shot_time < shoot_cooldown:
+		return
+	last_shot_time = now
+	shoot()
+
+
+func _process(delta):
+	# Keyboard / action shooting still works if mapped
+	#if Input.is_action_just_pressed("shoot"):
+	#	shoot()
+
+	# Shield timer
+	if has_shield:
+		shield_time_left -= delta
+		if shield_time_left <= 0.0:
+			shield_time_left = 0.0
+			has_shield = false
+			update_heart_display()
+
+	# Damage buff timer
+	if has_damage_buff:
+		damage_time_left -= delta
+		if damage_time_left <= 0.0:
+			damage_time_left = 0.0
+			has_damage_buff = false
+
+# ───────────────────────────────────────────────
+# READY
+# ───────────────────────────────────────────────
+func _ready():
+	# Load heart UI into list
+	for heart in red_hearts.get_children():
+		if heart is TextureRect:
+			red_hearts_list.append(heart)
+
+	for heart in black_hearts.get_children():
+		if heart is TextureRect:
+			black_hearts_list.append(heart)
+
+	for heart in blue_hearts.get_children():
+		if heart is TextureRect:
+			blue_hearts_list.append(heart)
+
+	# Ensure display matches hp
+	update_heart_display()
+
+# ───────────────────────────────────────────────
+# SLOW EFFECT
+# ───────────────────────────────────────────────
+func apply_slow(amount: float, duration: float):
+	if is_slowed:
+		return
+
+	is_slowed = true
+	SPEED *= amount
+
+	var timer := get_tree().create_timer(duration)
+	timer.timeout.connect(func():
+		if is_instance_valid(self):
+			SPEED /= amount
+			is_slowed = false)
+
+# ───────────────────────────────────────────────
+# UPDATE HEART UI
+# ───────────────────────────────────────────────
+func update_heart_display():
+	for i in range(max_hp):
+		if has_shield:
+			# Show blue hearts
+			blue_hearts_list[i].visible = i < hp
+			red_hearts_list[i].visible = false
+			black_hearts_list[i].visible = false
+
+		elif is_poisoned:
+			# Show black hearts
+			black_hearts_list[i].visible = i < hp
+			red_hearts_list[i].visible = false
+			blue_hearts_list[i].visible = false
+
+		else:
+			# Show red hearts
+			red_hearts_list[i].visible = i < hp
+			black_hearts_list[i].visible = false
+			blue_hearts_list[i].visible = false
+
+# Low HP alert
+func low_health_alert():
+	if hp == 1:
+		if low_health_sfx and not low_health_sfx.is_playing():
+			low_health_sfx.play()
+	elif hp > 1:
+		if low_health_sfx and low_health_sfx.is_playing():
+			low_health_sfx.stop()
+
+# ───────────────────────────────────────────────
+# DAMAGE + DEATH
+# ───────────────────────────────────────────────
+func take_damage(amount: int):
+	if has_shield:
+		return
+
+	hp -= amount
+	if hp < 0:
+		hp = 0
+	damage_sfx.play()
+
+	if hp <= 0:
+		die()
+		return
+
+	# Still alive:
+	low_health_alert()
+	update_heart_display()
+	hit.emit()
+
+func die():
+	killed.emit()
+	queue_free()
+
+# Healing
+func heal(amount: int):
+	# This makes it so NOTHING can heal the player when can_heal is set to false
+	if is_poisoned:
+		return
+
+	hp = clamp(hp + amount, 0, max_hp)
+	update_heart_display()
+	low_health_alert()
+
+func apply_poison():
+	if has_shield:
+		return
+	is_poisoned = true
+	update_heart_display()
+
+func cure_poison():
+	is_poisoned = false
+	update_heart_display()
+
+func apply_shield(duration):
+	if is_poisoned:
+		return
+	has_shield = true
+	shield_time_left = duration
+	update_heart_display()
+
+func apply_damage_buff(duration):
+	if has_damage_buff:
+		return
+	has_damage_buff = true
+	damage_time_left = duration
+
+func completed_level():
+	level_completed = true
+	emit_signal("levelcompleted")
+
+# ───────────────────────────────────────────────
+# COLLISION WITH ENEMY
+# ───────────────────────────────────────────────
+func _on_body_entered(body):
+	if body is Enemy:
+		body.take_damage(1, self)  # Pass the correct source!
+		take_damage(1)
+
+func _on_hit() -> void:
+	$"../SFX/EnemyHit".play()
