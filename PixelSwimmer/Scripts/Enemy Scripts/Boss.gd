@@ -14,7 +14,7 @@ signal shield_changed(active: bool)
 @onready var fire_timer = $FireTimer
 @onready var shield_particles = $ShieldCanvas/ShieldParticles
 @onready var health_bar = $HealthBarContainer/HealthBar
-
+@onready var boss_death_anim: AnimatedSprite2D = $BossDeathAnim
 
 #variables
 var player: Node2D
@@ -50,9 +50,17 @@ func _on_fire_timer_timeout() -> void:
 	get_tree().current_scene.add_child(laser)
 
 func die(source: Node = null):
+	if is_dead:
+		return
 	is_dead = true
-	boss_died.emit()
+
 	enemy_killed.emit(points, death_sound, source)
+	$AnimatedSprite2D.visible = false
+
+	boss_death_anim.visible = true
+	boss_death_anim.play("die")
+	await boss_death_anim.animation_finished
+	boss_died.emit()
 	queue_free()
 
 func take_damage(amount: int, source: Node = null) -> void:

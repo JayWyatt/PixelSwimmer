@@ -52,16 +52,29 @@ var all_buff_scenes: Array[PackedScene] = [
 	preload("res://Scenes/Buffs Scenes/DamageBuff.tscn"),
 	preload("res://Scenes/Buffs Scenes/AntidoteBuff.tscn")
 ]
+#var levels = [
+	#{"EnemySperm":1, "Egg": 1,}, #Lvl 1
+	#{"EnemySperm":1, "Egg": 1,}, #Lvl 2
+	#{"EnemySperm":1, "Egg": 1,}, #Lvl 3
+	#{"EnemySperm":1, "Egg": 1,}, #Lvl 4
+	#{"EnemySperm":1, "Egg": 1,}, #Lvl 5       #FOR WHENTESTING THE GAME ON MOBILE
+	#{"EnemySperm":1, "Egg": 1,}, #Lvl 6
+	#{"EnemySperm":1, "Egg": 1,}, #Lvl 7
+	#{"EnemySperm":1, "Egg": 1,}, #Lvl 8
+	#{"EnemySperm":1, "Egg": 1,}, #Lvl 9
+	#{"Boss": 1, "Egg": 1} #BossLevel
+	#]
+
 var levels = [
 	{"EnemySperm":5, "RedCell": 5, "MucusEnemy": 10, "Egg": 1, "RequiredKills": 10}, #Lvl 1
 	{"EnemySperm":5, "RedCell": 5, "MucusEnemy": 10, "ExplodingEnemy": 10, "Egg": 1, "RequiredKills": 10}, #Lvl 2
-	{"EnemySperm":5, "RedCell": 2, "MucusEnemy": 10, "ExplodingEnemy": 15, "WhiteCell": 20, "Egg": 1}, #Lvl 3
+	{"EnemySperm":5, "RedCell": 2, "MucusEnemy": 10, "ExplodingEnemy": 15, "WhiteCell": 5, "Egg": 1, "RequiredKills": 25}, #Lvl 3
 	{"EnemySperm":5, "MucusEnemy": 5, "ExplodingEnemy": 20, "WhiteCell": 10, "Parasite": 5, "Egg": 1, "RequiredKills": 40}, #Lvl 4
 	{"EnemySperm":5, "MucusEnemy": 5, "ExplodingEnemy": 20, "WhiteCell": 10, "Parasite": 10, "Egg": 1, "RequiredKills": 45}, #Lvl 5
 	{"EnemySperm":5, "MucusEnemy": 5, "ExplodingEnemy": 20, "WhiteCell": 15, "Parasite": 15, "Egg": 1, "RequiredKills": 60}, #Lvl 6
 	{"EnemySperm":5, "MucusEnemy": 5, "ExplodingEnemy": 20, "WhiteCell": 20, "Parasite": 20, "BossMinion": 5, "Egg": 1, "RequiredKills": 90}, #Lvl 7
 	{"EnemySperm":5, "MucusEnemy": 5, "ExplodingEnemy": 20, "WhiteCell": 10, "Parasite": 10, "BossMinion": 10, "Egg": 1, "RequiredKills": 50}, #Lvl 8
-	{"EnemySperm":5, "MucusEnemy": 5, "ExplodingEnemy": 20, "WhiteCell": 10, "Parasite": 10, "BossMinion": 15, "Egg": 1, "RequiredKills": 55}, #Lvl 8
+	{"EnemySperm":5, "MucusEnemy": 5, "ExplodingEnemy": 20, "WhiteCell": 10, "Parasite": 10, "BossMinion": 15, "Egg": 1, "RequiredKills": 55}, #Lvl 9
 	{"Boss": 1,"Egg": 1} #BossLevel
 	]
 var enemy_spawn_queue = []
@@ -82,6 +95,7 @@ var scroll_speed = 300
 const BUFF_AVOID_RADIUS := 32.0
 var boss_dead: bool = false
 var is_boss_level: bool = false
+var pending_boss_egg = false
 
 #FUNCTIONS
 
@@ -438,25 +452,26 @@ func spawn_level(level_index):
 func _on_story_enemy_spawn_timer_timeout():
 	if enemy_queue_index < enemy_spawn_queue.size():
 		var enemy_type = enemy_spawn_queue[enemy_queue_index]
+
+		if enemy_type == "Egg" and is_boss_level:
+			pending_boss_egg = true
+			enemy_queue_index += 1
+			return
+
 		var enemy_scene = load("res://Scenes/Enemy Scenes/%s.tscn" % enemy_type)
 		var enemy_instance = enemy_scene.instantiate()
 
-		if enemy_type == "Egg":
-			if is_boss_level and not boss_dead:
-				return
-			enemy_instance.global_position = Vector2(273, -50)
-
-		elif enemy_type == "Boss":
+		if enemy_type == "Boss":
 			enemy_instance.global_position = Vector2(273, 250)
 			enemy_instance.boss_died.connect(_on_boss_died)
-			# connect boss-specific signal here, inside the Boss branch
 			if enemy_instance.has_signal("spawn_minions"):
 				enemy_instance.spawn_minions.connect(_on_boss_spawn_minions.bind(enemy_instance))
-
+				
+		elif enemy_type == "Egg":
+			enemy_instance.global_position = Vector2(273, -50)
 		else:
 			enemy_instance.global_position = Vector2(randf_range(50, 500), -50)
 
-		# Common connections for all enemies
 		if enemy_instance.has_signal("enemy_killed"):
 			enemy_instance.enemy_killed.connect(_on_enemy_killed)
 
@@ -518,6 +533,7 @@ func start_game(mode, current_level):
 
 	is_boss_level = level_data.has("Boss")
 	boss_dead = not is_boss_level
+	pending_boss_egg = false
 	
 	if is_boss_level:
 		$UILayer/HUD/KillLabel.visible = false
@@ -570,6 +586,13 @@ func _on_next_level_pressed() -> void:
 func _on_boss_died() -> void:
 	boss_dead = true
 
+	if pending_boss_egg:
+		var egg_scene: PackedScene = load("res://Scenes/Enemy Scenes/Egg.tscn")
+		var egg_instance = egg_scene.instantiate()
+		egg_instance.global_position = Vector2(273, -50)
+		enemy_container.add_child(egg_instance)
+		pending_boss_egg = false
+
 #level text for ui (other part in ready)
 func get_level_text() -> String:
 	if GameSession.mode == "story":
@@ -583,10 +606,15 @@ func get_level_text() -> String:
 	return ""
 
 func _check_level_completion():
-	if required_kills > 0 and kills < required_kills and not is_boss_level:
+	if is_boss_level:
+		# On boss level, only complete when boss_dead is true
+		if boss_dead:
+			show_chapter_complete_screen()
+		return
+
+	# Non-boss levels use kills/required_kills
+	if required_kills > 0 and kills < required_kills:
 		_fail_level_due_to_kills()
-	elif is_boss_level and boss_dead:
-		show_chapter_complete_screen()
 	else:
 		show_level_complete_screen()
 

@@ -25,6 +25,7 @@ func open_from_main():
 
 func _on_back_pressed():
 	SettingsManager.save_settings()
+	Input.vibrate_handheld(40, 0.3)
 	if origin == "pause_menu":
 		visible = false  # just hide, don't free
 	else:

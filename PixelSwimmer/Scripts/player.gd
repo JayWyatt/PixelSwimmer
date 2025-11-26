@@ -12,10 +12,10 @@ signal levelcompleted
 # ───────────────────────────────────────────────
 # MOBILE INPUT
 # ───────────────────────────────────────────────
-@export var drag_threshold: float = 8.0          # how far you must move before it's a drag
+@export var drag_threshold: float = 8          # how far you must move before it's a drag
 @export var shoot_cooldown: float = 0.12         # seconds between shots
-@export var max_drag_distance: float = 120.0
-@export var follow_strength: float = 10.0
+@export var max_drag_distance: float = 120
+@export var follow_strength: float = 10
 
 var touch_start_pos: Vector2 = Vector2.ZERO
 var is_dragging: bool = false
@@ -90,6 +90,7 @@ func _input(event):
 	elif event is InputEventScreenTouch and not event.pressed:
 		is_dragging = false
 		move_direction = Vector2.ZERO
+		velocity = Vector2.ZERO
 
 		# If this touch wasn't a movement, treat it as a tap
 		if not touch_was_movement:
@@ -105,7 +106,14 @@ func _physics_process(delta):
 	# Smooth movement while dragging
 	if is_dragging:
 		var to_finger: Vector2 = finger_pos - global_position
-		velocity = to_finger * 5.0 #<--------adjusting sensitivety from dragging to finger
+
+	# ✅ Clamp how far the player can be "pulled"
+		var distance := to_finger.length()
+		if distance > max_drag_distance:
+			to_finger = to_finger.normalized() * max_drag_distance
+
+		velocity = to_finger * follow_strength
+
 
 	else:
 		# friction / slow down when not dragging
