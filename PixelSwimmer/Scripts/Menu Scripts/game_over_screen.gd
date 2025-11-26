@@ -10,4 +10,4 @@ func set_high_score(value):
 
 #try again button
 func _on_texture_button_pressed() -> void:
-	get_tree().change_scene_to_file("res://Scenes/Root.tscn")
+	SceneHelper._deferred_change_scene.call_deferred("res://Scenes/Root.tscn")

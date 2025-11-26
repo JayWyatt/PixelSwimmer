@@ -230,16 +230,18 @@ func _open_pause_options() -> void:
 
 func _pause_options_back():
 	pause_menu.show_pause()
+	
 
 func _go_to_main_menu():
 	get_tree().paused = false
-	get_tree().change_scene_to_file("res://Scenes/Menu Scenes/main_menu.tscn")
+	SceneHelper._deferred_change_scene.call_deferred("res://Scenes/Menu Scenes/main_menu.tscn")
 
 func _quit_game():
 	get_tree().quit()
 
 func _on_pause_button_pressed() -> void:
 	_pause_game()
+	Input.vibrate_handheld(40, 0.3)
 
 # ------------------------------------------------------------
 # Main Game Logic
@@ -559,11 +561,11 @@ func _on_next_level_pressed() -> void:
 	# Optional: check bounds so you don't go past the last level
 	if GameSession.current_level >= levels.size():
 		# e.g. go back to main menu or show “You finished the game” (change later to chapter complete)
-		get_tree().change_scene_to_file("res://Scenes/Menu Scenes/main_menu.tscn")
+		SceneHelper._deferred_change_scene.call_deferred("res://Scenes/Menu Scenes/main_menu.tscn")
 		return
 
 	# Reload the game scene so _ready runs again and uses the new current_level
-	get_tree().change_scene_to_file("res://Scenes/Root.tscn")
+	SceneHelper._deferred_change_scene.call_deferred("res://Scenes/Root.tscn")
 
 func _on_boss_died() -> void:
 	boss_dead = true

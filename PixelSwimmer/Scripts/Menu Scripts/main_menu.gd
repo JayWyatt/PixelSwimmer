@@ -13,13 +13,14 @@ func _ready():
 func _on_survival_pressed() -> void:
 	GameSession.mode = "survival"
 	GameSession.current_level = 0
-	get_tree().change_scene_to_file("res://Scenes/Root.tscn")
+	SceneHelper._deferred_change_scene.call_deferred ("res://Scenes/Root.tscn")
 
 func _on_story_mode_pressed() -> void:
-	get_tree().change_scene_to_file("res://Scenes/Menu Scenes/ChaptersScreen.tscn")
+	SceneHelper._deferred_change_scene.call_deferred ("res://Scenes/Menu Scenes/ChaptersScreen.tscn")
 
 func _on_options_pressed():
-	get_tree().change_scene_to_file("res://Scenes/Menu Scenes/options.tscn")
+	SceneHelper._deferred_change_scene.call_deferred ("res://Scenes/Menu Scenes/options.tscn")
 
 func _on_quit_pressed():
+	Input.vibrate_handheld(40, 0.3)
 	get_tree().quit()

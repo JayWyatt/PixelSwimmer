@@ -22,8 +22,18 @@ func show_options():
 	pause_menu.visible = false
 	options_menu.visible = true
 
-func _on_resume_pressed(): emit_signal("resume_pressed")
-func _on_options_pressed(): emit_signal("options_pressed")
-func _on_main_menu_pressed(): emit_signal("main_menu_pressed")
-func _on_quit_pressed(): emit_signal("quit_pressed")
-func _on_back_pressed(): emit_signal("options_back_pressed")
+func _on_resume_pressed(): 
+	emit_signal("resume_pressed")
+	Input.vibrate_handheld(40, 0.3)
+func _on_options_pressed(): 
+	emit_signal("options_pressed")
+	Input.vibrate_handheld(40, 0.3)
+func _on_main_menu_pressed(): 
+	emit_signal("main_menu_pressed")
+	Input.vibrate_handheld(40, 0.3)
+func _on_quit_pressed(): 
+	emit_signal("quit_pressed")
+	Input.vibrate_handheld(40, 0.3)
+func _on_back_pressed(): 
+	emit_signal("options_back_pressed")
+	Input.vibrate_handheld(40, 0.3)

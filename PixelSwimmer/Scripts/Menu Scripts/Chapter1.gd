@@ -29,70 +29,80 @@ func _on_level_1_pressed() -> void:
 		return
 	GameSession.mode = "story"
 	GameSession.current_level = 0
-	get_tree().change_scene_to_file("res://Scenes/Root.tscn")
+	SceneHelper._deferred_change_scene.call_deferred ("res://Scenes/Root.tscn")
 
 func _on_level_2_pressed() -> void:
+	Input.vibrate_handheld(40, 0.3)
 	if 1 > GameSession.highest_unlocked_level:
 		return
 	GameSession.mode = "story"
 	GameSession.current_level = 1
-	get_tree().change_scene_to_file("res://Scenes/Root.tscn")
+	SceneHelper._deferred_change_scene.call_deferred("res://Scenes/Root.tscn")
 
 func _on_level_3_pressed() -> void:
+	Input.vibrate_handheld(40, 0.3)
 	if 2 > GameSession.highest_unlocked_level:
 		return
 	GameSession.mode = "story"
 	GameSession.current_level = 2
-	get_tree().change_scene_to_file("res://Scenes/Root.tscn")
+	SceneHelper._deferred_change_scene.call_deferred("res://Scenes/Root.tscn")
 
 func _on_level_4_pressed() -> void:
+	Input.vibrate_handheld(40, 0.3)
 	if 3 > GameSession.highest_unlocked_level:
 		return
 	GameSession.mode = "story"
 	GameSession.current_level = 3
-	get_tree().change_scene_to_file("res://Scenes/Root.tscn")
+	SceneHelper._deferred_change_scene.call_deferred("res://Scenes/Root.tscn")
 
 func _on_level_5_pressed() -> void:
+	Input.vibrate_handheld(40, 0.3)
 	if 4 > GameSession.highest_unlocked_level:
 		return
 	GameSession.mode = "story"
 	GameSession.current_level = 4
-	get_tree().change_scene_to_file("res://Scenes/Root.tscn")
+	SceneHelper._deferred_change_scene.call_deferred("res://Scenes/Root.tscn")
 
 func _on_level_6_pressed() -> void:
+	Input.vibrate_handheld(40, 0.3)
 	if 5 > GameSession.highest_unlocked_level:
 		return
 	GameSession.mode = "story"
 	GameSession.current_level = 5
-	get_tree().change_scene_to_file("res://Scenes/Root.tscn")
+	SceneHelper._deferred_change_scene.call_deferred("res://Scenes/Root.tscn")
 
 func _on_level_7_pressed() -> void:
+	Input.vibrate_handheld(40, 0.3)
 	if 6 > GameSession.highest_unlocked_level:
 		return
 	GameSession.mode = "story"
 	GameSession.current_level = 6
-	get_tree().change_scene_to_file("res://Scenes/Root.tscn")
+	SceneHelper._deferred_change_scene.call_deferred("res://Scenes/Root.tscn")
 
 func _on_level_8_pressed() -> void:
+	Input.vibrate_handheld(40, 0.3)
 	if 7 > GameSession.highest_unlocked_level:
 		return
 	GameSession.mode = "story"
 	GameSession.current_level = 7
-	get_tree().change_scene_to_file("res://Scenes/Root.tscn")
+	SceneHelper._deferred_change_scene.call_deferred("res://Scenes/Root.tscn")
 
 func _on_level_9_pressed() -> void:
+	Input.vibrate_handheld(40, 0.3)
 	if 8 > GameSession.highest_unlocked_level:
 		return
 	GameSession.mode = "story"
 	GameSession.current_level = 8
-	get_tree().change_scene_to_file("res://Scenes/Root.tscn")
+	SceneHelper._deferred_change_scene.call_deferred("res://Scenes/Root.tscn")
 
 func _on_boss_level_pressed() -> void:
+	Input.vibrate_handheld(40, 0.3)
 	if 9 > GameSession.highest_unlocked_level:
 		return
 	GameSession.mode = "story"
 	GameSession.current_level = 9
-	get_tree().change_scene_to_file("res://Scenes/Root.tscn")
+	SceneHelper._deferred_change_scene.call_deferred("res://Scenes/Root.tscn")
 
 func _on_back_button_pressed() -> void:
-	get_tree().change_scene_to_file("res://Scenes/Menu Scenes/ChaptersScreen.tscn")
+	Input.vibrate_handheld(40, 0.3)
+	SceneHelper._deferred_change_scene.call_deferred("res://Scenes/Menu Scenes/ChaptersScreen.tscn")

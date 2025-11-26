@@ -12,16 +12,16 @@ func _ready() -> void:
 	chapter_4.disabled = GameSession.highest_unlocked_chapter < 3
 
 func _on_chapter_1_pressed() -> void:
-	get_tree().change_scene_to_file("res://Scenes/Menu Scenes/Chapters/Chapter1.tscn")
+	SceneHelper._deferred_change_scene.call_deferred ("res://Scenes/Menu Scenes/Chapters/Chapter1.tscn")
 
 func _on_chapter_2_pressed() -> void:
-	get_tree().change_scene_to_file("res://Scenes/Menu Scenes/Chapters/ComingSoonScreen.tscn")
+	SceneHelper._deferred_change_scene.call_deferred ("res://Scenes/Menu Scenes/Chapters/ComingSoonScreen.tscn")
 
 func _on_chapter_3_pressed() -> void:
-	get_tree().change_scene_to_file("res://Scenes/Menu Scenes/Chapters/ComingSoonScreen.tscn")
+	SceneHelper._deferred_change_scene.call_deferred ("res://Scenes/Menu Scenes/Chapters/ComingSoonScreen.tscn")
 
 func _on_chapter_4_pressed() -> void:
-	get_tree().change_scene_to_file("res://Scenes/Menu Scenes/Chapters/ComingSoonScreen.tscn")
+	SceneHelper._deferred_change_scene.call_deferred ("res://Scenes/Menu Scenes/Chapters/ComingSoonScreen.tscn")
 
 func _on_back_button_pressed() -> void:
-	get_tree().change_scene_to_file("res://Scenes/Menu Scenes/main_menu.tscn")
+	SceneHelper._deferred_change_scene.call_deferred ("res://Scenes/Menu Scenes/main_menu.tscn")

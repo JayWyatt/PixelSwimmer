@@ -14,12 +14,15 @@ signal levelcompleted
 # ───────────────────────────────────────────────
 @export var drag_threshold: float = 8.0          # how far you must move before it's a drag
 @export var shoot_cooldown: float = 0.12         # seconds between shots
+@export var max_drag_distance: float = 120.0
+@export var follow_strength: float = 10.0
 
 var touch_start_pos: Vector2 = Vector2.ZERO
 var is_dragging: bool = false
 var touch_was_movement: bool = false
 var move_direction: Vector2 = Vector2.ZERO
 var last_shot_time: float = 0.0
+var finger_pos: Vector2 = Vector2.ZERO
 
 # ───────────────────────────────────────────────
 # Export variables
@@ -79,10 +82,9 @@ func _input(event):
 	elif event is InputEventScreenDrag and is_dragging:
 		var drag_vector: Vector2 = event.position - touch_start_pos
 
-		# Only treat as movement if we move far enough
 		if drag_vector.length() > drag_threshold:
 			touch_was_movement = true
-			move_direction = drag_vector.normalized()
+			finger_pos = event.position
 
 	# TOUCH RELEASE → POSSIBLE TAP / SHOOT
 	elif event is InputEventScreenTouch and not event.pressed:
@@ -101,8 +103,10 @@ func _input(event):
 # ───────────────────────────────────────────────
 func _physics_process(delta):
 	# Smooth movement while dragging
-	if is_dragging and move_direction != Vector2.ZERO:
-		velocity = move_direction * SPEED
+	if is_dragging:
+		var to_finger: Vector2 = finger_pos - global_position
+		velocity = to_finger * 5.0 #<--------adjusting sensitivety from dragging to finger
+
 	else:
 		# friction / slow down when not dragging
 		velocity = velocity.move_toward(Vector2.ZERO, SPEED * delta)
