@@ -23,6 +23,7 @@ var touch_was_movement: bool = false
 var move_direction: Vector2 = Vector2.ZERO
 var last_shot_time: float = 0.0
 var finger_pos: Vector2 = Vector2.ZERO
+var speed_multiplyer = 1.0
 
 # ───────────────────────────────────────────────
 # Export variables
@@ -112,7 +113,7 @@ func _physics_process(delta):
 		if distance > max_drag_distance:
 			to_finger = to_finger.normalized() * max_drag_distance
 
-		velocity = to_finger * follow_strength
+		velocity = to_finger * follow_strength * speed_multiplyer
 
 
 	else:
@@ -188,12 +189,12 @@ func apply_slow(amount: float, duration: float):
 		return
 
 	is_slowed = true
-	SPEED *= amount
+	speed_multiplyer *= amount
 
 	var timer := get_tree().create_timer(duration)
 	timer.timeout.connect(func():
 		if is_instance_valid(self):
-			SPEED /= amount
+			speed_multiplyer /= amount
 			is_slowed = false)
 
 # ───────────────────────────────────────────────
