@@ -10,31 +10,20 @@ signal hit
 signal levelcompleted
 
 # ───────────────────────────────────────────────
-# Variables
+# MOBILE INPUT
 # ───────────────────────────────────────────────
-# Mobile variables
-@export var tap_max_time := 0.18        # Max time for a tap
-@export var tap_max_distance := 20      # Max movement allowed for a tap
-var touch_start_pos := Vector2.ZERO
-var touch_start_time := 0.0
-var is_dragging := false
-var move_direction := Vector2.ZERO
+@export var drag_threshold: float = 8.0          # how far you must move before it's a drag
+@export var shoot_cooldown: float = 0.12         # seconds between shots
 
-# Movement vs shooting lock
-@export var move_lock_time := 0.15   # seconds before shooting is allowed after movement
-var movement_started := false
-var can_shoot_after_move := false
-var last_move_time := 0.0
+var touch_start_pos: Vector2 = Vector2.ZERO
+var is_dragging: bool = false
+var touch_was_movement: bool = false
+var move_direction: Vector2 = Vector2.ZERO
+var last_shot_time: float = 0.0
 
-# Shoot cooldown (prevents double tap)
-@export var shoot_cooldown := 0.05
-var last_shot_time := -999.0
-@export var drag_threshold := 15
-# Touch ownership
-var active_touch_id := -1
-var touch_is_movement := false
-
+# ───────────────────────────────────────────────
 # Export variables
+# ───────────────────────────────────────────────
 @export var SPEED := 300.0
 @export var SHOOT_MULTIPLIER := 1.3
 @export var margin := 32
@@ -46,7 +35,6 @@ var laser_scene := preload("res://Scenes/Laser Scenes/Laser.tscn")
 @export var damage_buff_laser_scene := preload("res://Scenes/Laser Scenes/DamageBuffLaser.tscn")
 
 var buff_active = false
-# Slow effect
 var is_slowed := false
 
 # HP + UI
@@ -76,83 +64,63 @@ var level_completed: bool = false
 @onready var damage_sfx := $TakeDamage
 @onready var low_health_sfx := $LowHealth
 
-var touch_was_movement := false
-var shoot_armed := false   # 🔑 THIS IS THE KEY
-
 # ───────────────────────────────────────────────
 # MOBILE INPUT
 # ───────────────────────────────────────────────
-
 func _input(event):
-	# --------------------
 	# TOUCH START
-	# --------------------
 	if event is InputEventScreenTouch and event.pressed:
 		touch_start_pos = event.position
-		touch_start_time = Time.get_ticks_msec()
 		is_dragging = true
 		touch_was_movement = false
+		move_direction = Vector2.ZERO
 
-	# --------------------
 	# DRAG → MOVEMENT
-	# --------------------
 	elif event is InputEventScreenDrag and is_dragging:
-		var drag_vector = event.position - touch_start_pos
+		var drag_vector: Vector2 = event.position - touch_start_pos
 
-		if drag_vector.length() > 12:
+		# Only treat as movement if we move far enough
+		if drag_vector.length() > drag_threshold:
 			touch_was_movement = true
-			move_in_direction(drag_vector.normalized())
+			move_direction = drag_vector.normalized()
 
-	# --------------------
-	# TOUCH RELEASE
-	# --------------------
+	# TOUCH RELEASE → POSSIBLE TAP / SHOOT
 	elif event is InputEventScreenTouch and not event.pressed:
 		is_dragging = false
+		move_direction = Vector2.ZERO
 
-		var distance: float = (event.position - touch_start_pos).length()
-
-
-		# ✅ If this touch moved → it is NEVER allowed to shoot
-		if touch_was_movement:
-			shoot_armed = true   # 🔑 next tap may shoot
-			return
-
-		# ✅ If we reached here, it was a tap
-		if shoot_armed and distance <= tap_max_distance:
-			try_shoot()
-			shoot_armed = false   # 🔒 consume the shot
-		else:
-			# First tap only arms shooting
-			shoot_armed = true
-
-func move_in_direction(direction: Vector2):
-	move_direction = direction
-
+		# If this touch wasn't a movement, treat it as a tap
+		if not touch_was_movement:
+			var now: float = Time.get_ticks_msec() / 1000.0
+			if now - last_shot_time >= shoot_cooldown:
+				shoot()
+				last_shot_time = now
 
 # ───────────────────────────────────────────────
-# PHYSICS
+# MOVEMENT
 # ───────────────────────────────────────────────
 func _physics_process(delta):
+	# Smooth movement while dragging
 	if is_dragging and move_direction != Vector2.ZERO:
 		velocity = move_direction * SPEED
 	else:
-		velocity.x = move_toward(velocity.x, 0.0, SPEED * delta)
-		velocity.y = move_toward(velocity.y, 0.0, SPEED * delta)
+		# friction / slow down when not dragging
+		velocity = velocity.move_toward(Vector2.ZERO, SPEED * delta)
 
 	move_and_slide()
 
-	var screen_size = get_viewport_rect().size
-	var half_height = screen_size.y * 0.5
+	# Clamp AFTER move_and_slide so we keep collisions
+	var screen_size: Vector2 = get_viewport_rect().size
+	var half_height: float = screen_size.y * 0.5
 
 	global_position.x = clamp(global_position.x, margin, screen_size.x - margin)
 	global_position.y = clamp(global_position.y, half_height + margin, screen_size.y - margin)
-
 
 # ───────────────────────────────────────────────
 # SHOOTING
 # ───────────────────────────────────────────────
 func shoot():
-	var location = muzzle.global_position
+	var location: Vector2 = muzzle.global_position
 
 	var scene_to_fire = laser_scene
 	if has_damage_buff:
@@ -160,18 +128,10 @@ func shoot():
 
 	laser_shot.emit(scene_to_fire, location, self)
 
-func try_shoot():
-	var now = Time.get_ticks_msec() / 1000.0
-	if now - last_shot_time < shoot_cooldown:
-		return
-	last_shot_time = now
-	shoot()
-
-
 func _process(delta):
-	# Keyboard / action shooting still works if mapped
-	#if Input.is_action_just_pressed("shoot"):
-	#	shoot()
+	# OPTIONAL: keyboard shooting for PC (KEEP DISABLED FOR MOBILE)
+	# if Input.is_action_just_pressed("shoot"):
+	# 	shoot()
 
 	# Shield timer
 	if has_shield:
@@ -283,7 +243,6 @@ func die():
 
 # Healing
 func heal(amount: int):
-	# This makes it so NOTHING can heal the player when can_heal is set to false
 	if is_poisoned:
 		return
 
@@ -323,7 +282,7 @@ func completed_level():
 # ───────────────────────────────────────────────
 func _on_body_entered(body):
 	if body is Enemy:
-		body.take_damage(1, self)  # Pass the correct source!
+		body.take_damage(1, self)
 		take_damage(1)
 
 func _on_hit() -> void:
