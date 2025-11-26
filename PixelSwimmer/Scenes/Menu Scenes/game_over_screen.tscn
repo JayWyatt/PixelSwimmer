@@ -130,6 +130,6 @@ offset_right = 304.45453
 offset_bottom = 126.0
 scale = Vector2(0.12, 0.1)
 texture_normal = ExtResource("4_ladg1")
-texture_hover = ExtResource("5_e5yba")
+texture_pressed = ExtResource("5_e5yba")
 
 [connection signal="pressed" from="Panel/TextureButton" to="." method="_on_texture_button_pressed"]

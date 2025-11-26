@@ -35,25 +35,25 @@ scale = Vector2(1.2562219, 1.2753611)
 layout_mode = 2
 size_flags_horizontal = 4
 texture_normal = ExtResource("2_sjs17")
-texture_hover = ExtResource("3_u8tnp")
+texture_pressed = ExtResource("3_u8tnp")
 
 [node name="Main Menu" type="TextureButton" parent="Pause/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 texture_normal = ExtResource("4_stj27")
-texture_hover = ExtResource("5_ix48p")
+texture_pressed = ExtResource("5_ix48p")
 
 [node name="Options" type="TextureButton" parent="Pause/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 texture_normal = ExtResource("6_ix48p")
-texture_hover = ExtResource("7_524vl")
+texture_pressed = ExtResource("7_524vl")
 
 [node name="Quit" type="TextureButton" parent="Pause/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 texture_normal = ExtResource("6_524vl")
-texture_hover = ExtResource("7_0fi7f")
+texture_pressed = ExtResource("7_0fi7f")
 
 [node name="PauseText" type="Sprite2D" parent="Pause"]
 position = Vector2(269.00003, 220.00002)

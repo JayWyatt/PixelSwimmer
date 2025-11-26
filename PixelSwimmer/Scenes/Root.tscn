@@ -129,7 +129,7 @@ offset_right = 308.0
 offset_bottom = 101.0
 scale = Vector2(0.5843101, 0.61272013)
 texture_normal = ExtResource("16_path1")
-texture_hover = ExtResource("17_okppc")
+texture_pressed = ExtResource("17_okppc")
 
 [node name="LevelLabel" type="Label" parent="UILayer/HUD"]
 layout_mode = 1

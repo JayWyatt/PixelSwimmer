@@ -55,7 +55,7 @@ offset_right = 54.0
 offset_bottom = 576.0
 scale = Vector2(1.4722989, 1.4204601)
 texture_normal = ExtResource("4_kftxf")
-texture_hover = ExtResource("5_663nc")
+texture_pressed = ExtResource("5_663nc")
 
 [connection signal="value_changed" from="VolumeControl/Volume" to="." method="_on_volume_value_changed"]
 [connection signal="toggled" from="VolumeControl/Mute" to="." method="_on_mute_toggled"]

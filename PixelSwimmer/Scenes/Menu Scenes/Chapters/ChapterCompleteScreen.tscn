@@ -35,7 +35,7 @@ offset_top = 431.0
 offset_right = 422.0
 offset_bottom = 531.0
 texture_normal = ExtResource("2_2wje5")
-texture_hover = ExtResource("3_uoodg")
+texture_pressed = ExtResource("3_uoodg")
 
 [node name="MainMenu" type="TextureButton" parent="Buttons"]
 process_mode = 2
@@ -45,7 +45,7 @@ offset_top = 531.0
 offset_right = 422.0
 offset_bottom = 631.0
 texture_normal = ExtResource("4_p66v1")
-texture_hover = ExtResource("5_fle14")
+texture_pressed = ExtResource("5_fle14")
 
 [connection signal="pressed" from="Buttons/StoryMode" to="." method="_on_story_mode_pressed"]
 [connection signal="pressed" from="Buttons/MainMenu" to="." method="_on_main_menu_pressed"]

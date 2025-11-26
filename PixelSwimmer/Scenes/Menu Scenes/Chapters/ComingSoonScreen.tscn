@@ -33,7 +33,7 @@ offset_top = 413.0
 offset_right = 422.0
 offset_bottom = 513.0
 texture_normal = ExtResource("2_1w4rc")
-texture_hover = ExtResource("3_d5pns")
+texture_pressed = ExtResource("3_d5pns")
 
 [node name="MainMenu" type="TextureButton" parent="Buttons"]
 layout_mode = 0
@@ -42,7 +42,7 @@ offset_top = 513.0
 offset_right = 422.0
 offset_bottom = 613.0
 texture_normal = ExtResource("4_fewmo")
-texture_hover = ExtResource("5_gjbk1")
+texture_pressed = ExtResource("5_gjbk1")
 
 [connection signal="pressed" from="Buttons/Back" to="." method="_on_back_pressed"]
 [connection signal="pressed" from="Buttons/MainMenu" to="." method="_on_main_menu_pressed"]
