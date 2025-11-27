@@ -13,9 +13,9 @@ config_version=5
 config/name="Pixel Swimmer"
 run/main_scene="uid://7f0sfjrmit5a"
 config/features=PackedStringArray("4.5", "Mobile")
-boot_splash/bg_color=Color(0.16862746, 0.56078434, 0.84705883, 1)
-boot_splash/image="uid://s15c7uvj2buf"
-config/icon="uid://s15c7uvj2buf"
+boot_splash/bg_color=Color(6.204355e-09, 0.006610811, 0.014770403, 1)
+boot_splash/image="uid://dqbuyvo1y6yls"
+config/icon="uid://k87mwik6xxch"
 
 [audio]
 

@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://cghi1x1nngvw8"]
 
 [ext_resource type="Script" uid="uid://dnwruofbat5ej" path="res://Scripts/Menu Scripts/options_menu.gd" id="1_4tmxy"]
-[ext_resource type="Texture2D" uid="uid://cw4lswe4a3yug" path="res://Assets/Backgrounds/CERVIX MENU BACKGROUND BLURRED.png" id="2_qyyw6"]
+[ext_resource type="Texture2D" uid="uid://bhqofrx5vpa00" path="res://Assets/Backgrounds/Options Menu Background.png" id="2_03aur"]
 [ext_resource type="Texture2D" uid="uid://crlfeyg4504ld" path="res://Assets/Menu Buttons/Back BUTTON (not hovered).png" id="4_kftxf"]
 [ext_resource type="Texture2D" uid="uid://kivgdmkjc8lo" path="res://Assets/Menu Buttons/Back BUTTON (hovered).png" id="5_663nc"]
 
@@ -21,15 +21,15 @@ offset_bottom = 40.0
 
 [node name="CervixMenuBackgroundBlurred" type="Sprite2D" parent="Background"]
 position = Vector2(-12.000061, 441.49997)
-scale = Vector2(0.4999999, 0.49947912)
-texture = ExtResource("2_qyyw6")
+texture = ExtResource("2_03aur")
 
 [node name="VolumeControl" type="VBoxContainer" parent="."]
 layout_mode = 0
-offset_left = -206.0
-offset_top = 169.11
-offset_right = 182.0
-offset_bottom = 767.0
+offset_left = -214.00003
+offset_top = 278.00003
+offset_right = 93.84207
+offset_bottom = 435.89005
+scale = Vector2(1.4000682, 1.3643454)
 
 [node name="Vol_Label" type="Label" parent="VolumeControl"]
 layout_mode = 2
@@ -49,11 +49,10 @@ layout_mode = 2
 
 [node name="BackButton" type="TextureButton" parent="."]
 layout_mode = 0
-offset_left = -246.0
-offset_top = 476.0
-offset_right = 54.0
-offset_bottom = 576.0
-scale = Vector2(1.4722989, 1.4204601)
+offset_left = -161.0
+offset_top = 624.0
+offset_right = 139.0
+offset_bottom = 724.0
 texture_normal = ExtResource("4_kftxf")
 texture_pressed = ExtResource("5_663nc")
 
