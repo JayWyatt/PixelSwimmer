@@ -13,7 +13,7 @@ signal levelcompleted
 # MOBILE INPUT
 # ───────────────────────────────────────────────
 @export var drag_threshold: float = 8          # how far you must move before it's a drag
-@export var shoot_cooldown: float = 0.12         # seconds between shots
+@export var shoot_cooldown: float = 0.12       # seconds between shots
 @export var max_drag_distance: float = 120
 @export var follow_strength: float = 10
 
@@ -24,6 +24,9 @@ var move_direction: Vector2 = Vector2.ZERO
 var last_shot_time: float = 0.0
 var finger_pos: Vector2 = Vector2.ZERO
 var speed_multiplyer = 1.0
+
+# New: offset so player is not under the thumb
+var drag_offset: Vector2 = Vector2.ZERO
 
 # ───────────────────────────────────────────────
 # Export variables
@@ -79,6 +82,15 @@ func _input(event):
 		touch_was_movement = false
 		move_direction = Vector2.ZERO
 
+		# Option A: use the real offset between player and finger
+		# drag_offset = global_position - event.position
+
+		# Option B: force the player to always sit above the thumb (recommended)
+		drag_offset = Vector2(0, -60)  # adjust 80 to how far above the thumb you want the player
+
+		# also set initial finger position
+		finger_pos = event.position
+
 	# DRAG → MOVEMENT
 	elif event is InputEventScreenDrag and is_dragging:
 		var drag_vector: Vector2 = event.position - touch_start_pos
@@ -106,16 +118,15 @@ func _input(event):
 func _physics_process(delta):
 	# Smooth movement while dragging
 	if is_dragging:
-		var to_finger: Vector2 = finger_pos - global_position
+		# desired position keeps a fixed offset from the finger
+		var desired_pos: Vector2 = finger_pos + drag_offset
+		var to_target: Vector2 = desired_pos - global_position
 
-	# ✅ Clamp how far the player can be "pulled"
-		var distance := to_finger.length()
+		var distance := to_target.length()
 		if distance > max_drag_distance:
-			to_finger = to_finger.normalized() * max_drag_distance
+			to_target = to_target.normalized() * max_drag_distance
 
-		velocity = to_finger * follow_strength * speed_multiplyer
-
-
+		velocity = to_target * follow_strength * speed_multiplyer
 	else:
 		# friction / slow down when not dragging
 		velocity = velocity.move_toward(Vector2.ZERO, SPEED * delta)
@@ -142,10 +153,6 @@ func shoot():
 	laser_shot.emit(scene_to_fire, location, self)
 
 func _process(delta):
-	# OPTIONAL: keyboard shooting for PC (KEEP DISABLED FOR MOBILE)
-	# if Input.is_action_just_pressed("shoot"):
-	# 	shoot()
-
 	# Shield timer
 	if has_shield:
 		shield_time_left -= delta

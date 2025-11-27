@@ -29,7 +29,7 @@ func _on_level_1_pressed() -> void:
 		return
 	GameSession.mode = "story"
 	GameSession.current_level = 0
-	SceneHelper._deferred_change_scene.call_deferred ("res://Scenes/Root.tscn")
+	SceneLoader.load_scene("res://Scenes/Root.tscn")
 
 func _on_level_2_pressed() -> void:
 	Input.vibrate_handheld(40, 0.3)
@@ -37,7 +37,7 @@ func _on_level_2_pressed() -> void:
 		return
 	GameSession.mode = "story"
 	GameSession.current_level = 1
-	SceneHelper._deferred_change_scene.call_deferred("res://Scenes/Root.tscn")
+	SceneLoader.load_scene("res://Scenes/Root.tscn")
 
 func _on_level_3_pressed() -> void:
 	Input.vibrate_handheld(40, 0.3)
@@ -45,7 +45,7 @@ func _on_level_3_pressed() -> void:
 		return
 	GameSession.mode = "story"
 	GameSession.current_level = 2
-	SceneHelper._deferred_change_scene.call_deferred("res://Scenes/Root.tscn")
+	SceneLoader.load_scene("res://Scenes/Root.tscn")
 
 func _on_level_4_pressed() -> void:
 	Input.vibrate_handheld(40, 0.3)
@@ -53,7 +53,7 @@ func _on_level_4_pressed() -> void:
 		return
 	GameSession.mode = "story"
 	GameSession.current_level = 3
-	SceneHelper._deferred_change_scene.call_deferred("res://Scenes/Root.tscn")
+	SceneLoader.load_scene("res://Scenes/Root.tscn")
 
 func _on_level_5_pressed() -> void:
 	Input.vibrate_handheld(40, 0.3)
@@ -61,7 +61,7 @@ func _on_level_5_pressed() -> void:
 		return
 	GameSession.mode = "story"
 	GameSession.current_level = 4
-	SceneHelper._deferred_change_scene.call_deferred("res://Scenes/Root.tscn")
+	SceneLoader.load_scene("res://Scenes/Root.tscn")
 
 func _on_level_6_pressed() -> void:
 	Input.vibrate_handheld(40, 0.3)
@@ -69,7 +69,7 @@ func _on_level_6_pressed() -> void:
 		return
 	GameSession.mode = "story"
 	GameSession.current_level = 5
-	SceneHelper._deferred_change_scene.call_deferred("res://Scenes/Root.tscn")
+	SceneLoader.load_scene("res://Scenes/Root.tscn")
 
 func _on_level_7_pressed() -> void:
 	Input.vibrate_handheld(40, 0.3)
@@ -77,7 +77,7 @@ func _on_level_7_pressed() -> void:
 		return
 	GameSession.mode = "story"
 	GameSession.current_level = 6
-	SceneHelper._deferred_change_scene.call_deferred("res://Scenes/Root.tscn")
+	SceneLoader.load_scene("res://Scenes/Root.tscn")
 
 func _on_level_8_pressed() -> void:
 	Input.vibrate_handheld(40, 0.3)
@@ -85,7 +85,7 @@ func _on_level_8_pressed() -> void:
 		return
 	GameSession.mode = "story"
 	GameSession.current_level = 7
-	SceneHelper._deferred_change_scene.call_deferred("res://Scenes/Root.tscn")
+	SceneLoader.load_scene("res://Scenes/Root.tscn")
 
 func _on_level_9_pressed() -> void:
 	Input.vibrate_handheld(40, 0.3)
@@ -93,7 +93,7 @@ func _on_level_9_pressed() -> void:
 		return
 	GameSession.mode = "story"
 	GameSession.current_level = 8
-	SceneHelper._deferred_change_scene.call_deferred("res://Scenes/Root.tscn")
+	SceneLoader.load_scene("res://Scenes/Root.tscn")
 
 func _on_boss_level_pressed() -> void:
 	Input.vibrate_handheld(40, 0.3)
@@ -101,7 +101,7 @@ func _on_boss_level_pressed() -> void:
 		return
 	GameSession.mode = "story"
 	GameSession.current_level = 9
-	SceneHelper._deferred_change_scene.call_deferred("res://Scenes/Root.tscn")
+	SceneLoader.load_scene("res://Scenes/Root.tscn")
 
 func _on_back_button_pressed() -> void:
 	Input.vibrate_handheld(40, 0.3)

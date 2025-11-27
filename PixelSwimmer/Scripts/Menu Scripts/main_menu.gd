@@ -13,7 +13,7 @@ func _ready():
 func _on_survival_pressed() -> void:
 	GameSession.mode = "survival"
 	GameSession.current_level = 0
-	SceneHelper._deferred_change_scene.call_deferred ("res://Scenes/Root.tscn")
+	SceneLoader.load_scene("res://Scenes/Root.tscn")
 
 func _on_story_mode_pressed() -> void:
 	SceneHelper._deferred_change_scene.call_deferred ("res://Scenes/Menu Scenes/ChaptersScreen.tscn")
